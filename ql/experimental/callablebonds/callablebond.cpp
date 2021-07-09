@@ -461,8 +461,12 @@ namespace QuantLib {
 
         arguments->callabilityPrices.clear();
         arguments->callabilityDates.clear();
+        arguments->callabilityAccruals.clear();
+        arguments->callabilityPriceTypes.clear();
         arguments->callabilityPrices.reserve(putCallSchedule_.size());
         arguments->callabilityDates.reserve(putCallSchedule_.size());
+        arguments->callabilityAccruals.reserve(putCallSchedule_.size());
+        arguments->callabilityPriceTypes.reserve(putCallSchedule_.size());
 
         arguments->paymentDayCounter = paymentDayCounter_;
         arguments->frequency = frequency_;
@@ -472,6 +476,8 @@ namespace QuantLib {
             if (!i->hasOccurred(settlement, false)) {
                 arguments->callabilityDates.push_back(i->date());
                 arguments->callabilityPrices.push_back(i->price().amount());
+                arguments->callabilityAccruals.push_back(this->accrued(i->date()));
+                arguments->callabilityPriceTypes.push_back(i->price().type());
 
                 if (i->price().type() == Bond::Price::Clean) {
                     /* calling accrued() forces accrued interest to be zero
@@ -479,7 +485,7 @@ namespace QuantLib {
                        price = clean price. Use here because callability is
                        always applied before coupon in the tree engine.
                     */
-                    arguments->callabilityPrices.back() += this->accrued(i->date());
+                    arguments->callabilityPrices.back() += arguments->callabilityAccruals.back();
                 }
             }
         }

@@ -181,6 +181,8 @@ namespace QuantLib {
         //! bond full/dirty/cash prices
         std::vector<Real> callabilityPrices;
         std::vector<Date> callabilityDates;
+        std::vector<Real> callabilityAccruals;
+        std::vector<Bond::Price::Type> callabilityPriceTypes;
         //! Spread to apply to the valuation. This is a continuously
         //! componded rate added to the model. Currently only applied
         //! by the TreeCallableFixedRateBondEngine
