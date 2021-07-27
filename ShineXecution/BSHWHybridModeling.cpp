@@ -4,11 +4,8 @@
 
 
 
-#include "hybridblackscholeshullwhiteprocess.hpp"
-
-
-
-#include "smithwilson.hpp"
+#include <ShineNgine/Hybrid/BSHW/hybridblackscholeshullwhiteprocess.hpp>
+#include <ShineNgine/smithwilson.hpp>
 
 
 
