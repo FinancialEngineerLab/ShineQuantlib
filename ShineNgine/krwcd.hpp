@@ -25,17 +25,17 @@
 /*! \file krwcd.hpp
     \brief %KrwCD index
 */
-
 #ifndef quantlib_krwcd_hpp
 #define quantlib_krwcd_hpp
 
 #include <ql/indexes/iborindex.hpp>
+#include <ql/currencies/asia.hpp>
+#include <ql/time/calendars/southkorea.hpp>
 
 namespace QuantLib {
 
     //! %KrwCD index
     /*! KrwCD rate fixed by the ECB.
-
         \warning This is the rate fixed by the ECB. Use EurLibor
                  if you're interested in the London fixing by BBA.
     */
@@ -105,13 +105,13 @@ namespace QuantLib {
                                     Handle<YieldTermStructure>())
         : KrwCD(Period(3, Months), h) {}
     };
-	//! 91-days %KrwCD index
-	class KrwCD91D : public KrwCD {
-	public:
-		explicit KrwCD91D(const Handle<YieldTermStructure>& h =
-			Handle<YieldTermStructure>())
-			: KrwCD(Period(91, Days), h) {}
-	};
+    //! 91-days %KrwCD index
+    class KrwCD91D : public KrwCD {
+    public:
+        explicit KrwCD91D(const Handle<YieldTermStructure>& h =
+            Handle<YieldTermStructure>())
+            : KrwCD(Period(91, Days), h) {}
+    };
     //! 4-months %KrwCD index
     class KrwCD4M : public KrwCD {
       public:
@@ -308,3 +308,4 @@ namespace QuantLib {
 }
 
 #endif
+
