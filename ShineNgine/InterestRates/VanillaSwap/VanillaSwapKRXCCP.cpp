@@ -179,7 +179,9 @@ int main()
 		std::cout << ccpInstruments.size() << std::endl;
 
 		double tolerance = 1.0e-15;
-		ext::shared_ptr<YieldTermStructure> ccpTermStructure(new PiecewiseYieldCurve<ZeroYield, Linear>(settlementDate, ccpInstruments, Actual365Fixed(), tolerance));
+		//ext::shared_ptr<YieldTermStructure> ccpTermStructure(new PiecewiseYieldCurve<ZeroYield, Linear>(settlementDate, ccpInstruments, Actual365Fixed(), tolerance));
+		ext::shared_ptr<YieldTermStructure> ccpTermStructure(new PiecewiseYieldCurve<Discount, LogLinear>(settlementDate, ccpInstruments, Actual365Fixed(), tolerance));
+		
 		ccpTermStructure->enableExtrapolation(true);
 		discountingTermStucture.linkTo(ccpTermStructure);
 
