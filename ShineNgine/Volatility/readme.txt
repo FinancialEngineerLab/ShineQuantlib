@@ -1,4 +1,7 @@
 
+Basic Note
+http://www.columbia.edu/~mh2078/ContinuousFE/LocalStochasticJumps.pdf
+
 
 1. Local Volatility Model
 Pricing with a Smile: https://www.math.nyu.edu/~benartzi/pricingw.pdf
