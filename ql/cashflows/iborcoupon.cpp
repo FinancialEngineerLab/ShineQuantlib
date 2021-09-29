@@ -143,7 +143,7 @@ namespace QuantLib {
 
     IborCoupon::Settings::Settings() :
 #ifndef QL_USE_INDEXED_COUPON
-        usingAtParCoupons_(true)
+
 #else
         usingAtParCoupons_(false)
 #endif

@@ -213,11 +213,10 @@ namespace QuantLib {
                           % m.currency().symbol();
     }
 
-    Money::Settings::Settings() :
-        conversionType_(Money::NoConversion),
-        baseCurrency_(Currency())
-    {
-    }
+    Money::Settings::Settings()
+    :
+
+      baseCurrency_(Currency()) {}
 
     const Money::ConversionType & Money::Settings::conversionType() const
     {

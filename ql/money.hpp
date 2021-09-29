@@ -122,7 +122,7 @@ namespace QuantLib {
         Currency & baseCurrency();
 
       private:
-        Money::ConversionType conversionType_;
+        Money::ConversionType conversionType_ = Money::NoConversion;
         Currency baseCurrency_;
     };
 

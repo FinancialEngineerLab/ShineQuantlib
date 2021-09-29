@@ -109,7 +109,7 @@ namespace QuantLib {
         bool usingAtParCoupons() const;
 
       private:
-        bool usingAtParCoupons_;
+        bool usingAtParCoupons_ = true;
     };
 
     //! helper class building a sequence of capped/floored ibor-rate coupons
