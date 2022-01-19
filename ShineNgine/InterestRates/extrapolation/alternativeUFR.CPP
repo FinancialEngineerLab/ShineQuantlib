@@ -4,15 +4,19 @@
 #include "SmithWilson.h"
 #include <ql/quantlib.hpp>
 #include <ql/indexes/ibor/krwcd.hpp>
+#include <ql/time/date.hpp>
 #include <iostream>
 #include <fstream>
 #include <vector>
 #include <sstream>
 #include <map>
-
+#include <string>
 
 using namespace QuantLib;
 //using namespace boost::unit_test_framework;
+
+
+
 
 struct Result
 {
@@ -34,6 +38,45 @@ namespace Alternative_forward_term_structure
 	{
 		Time ttm;
 		Real weight;
+	};
+
+	/* Interest Rate Data and Index*/
+	Datum swapData[] =
+	{
+		//{3, Months, 0.0128}
+		{1, Years, 0.015692857143}
+		,{2, Years, 0.01755}
+		,{3, Years, 0.017967857143}
+		,{4, Years, 0.01815}
+		,{5, Years, 0.0182}
+		,{7, Years, 0.018175}
+		,{10, Years,0.018275}
+		,{12, Years,0.018192857143}
+		,{15, Years,0.017125}
+		,{20, Years,0.015896428571}
+	};
+
+	/* Interest Rate Data and Index*/
+	Datum swapDataCCP[] =
+	{
+		 {1, Days, 0.010599634892}
+		,{3, Months, 0.012800000000}
+		,{6, Months, 0.013925000000}
+		,{9, Months, 0.014775000000}
+		,{1, Years,0.015692857143}
+		,{18, Months,0.016917857143}
+		,{2, Years,0.01755000000000}
+		,{3, Years,0.01796785714300}
+		,{4, Years,0.01815000000000}
+		,{5, Years,0.01820000000000}
+		,{6, Years,0.01816071428600}
+		,{7, Years,0.01817500000000}
+		,{8, Years,0.01820714285700}
+		,{9, Years,0.01824285714300}
+		,{10, Years,0.01827500000000}
+		,{12, Years,0.01819285714300}
+		,{15, Years,0.01712500000000}
+		,{20, Years,0.01589642857100}
 	};
 
 	struct CommonVars
@@ -69,8 +112,8 @@ namespace Alternative_forward_term_structure
 			dayCount = Actual365Fixed();
 			calendar = SouthKorea();
 			ccy = KRWCurrency();
-			fixedFrequency = Quarterly;
-			floatingTenor = 3 * Months;
+			fixedFrequency = Annual;
+			floatingTenor = 12 * Months;
 			alpha = 0.1;
 			tolerance = 1e-15;
 
@@ -122,7 +165,7 @@ namespace Alternative_forward_term_structure
 			calendar.addHoliday(Date(3, Mar, 2042));
 
 			/* Interest Rate Data and Index*/
-			Datum swapData[] =
+			/*atum swapData[] =
 			{
 				{3, Months, 0.0128}
 				,{1, Years, 0.015692857143}
@@ -136,6 +179,7 @@ namespace Alternative_forward_term_structure
 				,{15, Years,0.017125}
 				,{20, Years,0.015896428571}
 			};
+			*/
 
 			InterestRate ufr(0.05069310344377, dayCount, Continuous, Annual);
 			ufrRate = ext::shared_ptr<Quote>(new SimpleQuote(ufr.equivalentRate(Continuous, Annual, 1.0)));
@@ -145,7 +189,7 @@ namespace Alternative_forward_term_structure
 			Settings::instance().evaluationDate() = today;
 
 			settlement = calendar.advance(today, settlementDays, Days);
-			index->addFixing(settlement, swapData[0].rate, true);
+			//index->addFixing(settlement, swapData[0].rate, true);
 
 			// Approaching member variable in the swapData Structure Array
 
@@ -169,7 +213,7 @@ namespace Alternative_forward_term_structure
 			ext::shared_ptr<YieldTermStructure> ftkCurve(new PiecewiseYieldCurve<Discount, LogLinear>(settlement, instruments, dayCount));
 			ftkCurve->enableExtrapolation();
 			ftkCurveHandle.linkTo(ftkCurve);
-			ext::shared_ptr<YieldTermStructure> spreaded(new ZeroSpreadedTermStructure(Handle<YieldTermStructure>(ftkCurve), LP_spread));
+			ext::shared_ptr<YieldTermStructure> spreaded(new ZeroSpreadedTermStructure(Handle<YieldTermStructure>(ftkCurve), LP_spread, Continuous));
 			spreaded->enableExtrapolation();
 			ftkSpreadedCurveHandle.linkTo(spreaded);// for Obeserver and Observable
 
@@ -261,29 +305,6 @@ namespace Alternative_forward_term_structure
 				calendar.addHoliday(Date(10, Oct, 2039));
 				calendar.addHoliday(Date(11, Apr, 2040));
 				calendar.addHoliday(Date(3, Mar, 2042));
-
-				/* Interest Rate Data and Index*/
-				Datum swapDataCCP[] =
-				{
-					 {1, Days, 0.010599634892}
-					,{3, Months, 0.012800000000}
-					,{6, Months, 0.013925000000}
-					,{9, Months, 0.014775000000}
-					,{1, Years,0.015692857143}
-					,{18, Months,0.016917857143}
-					,{2, Years,0.01755000000000}
-					,{3, Years,0.01796785714300}
-					,{4, Years,0.01815000000000}
-					,{5, Years,0.01820000000000}
-					,{6, Years,0.01816071428600}
-					,{7, Years,0.01817500000000}
-					,{8, Years,0.01820714285700}
-					,{9, Years,0.01824285714300}
-					,{10, Years,0.01827500000000}
-					,{12, Years,0.01819285714300}
-					,{15, Years,0.01712500000000}
-					,{20, Years,0.01589642857100}
-				};
 
 				InterestRate ufr(0.05069310344377, dayCount, Continuous, Annual);
 				ufrRate = ext::shared_ptr<Quote>(new SimpleQuote(ufr.equivalentRate(Continuous, Annual, 1.0)));
@@ -788,8 +809,8 @@ std::map<Date, std::pair<Rate, Rate>> AlternativeUltimateForwardTermStructure::g
 		Date mat1 = vars.ftkSpreadedCurveHandle->referenceDate() + tenors_intp[i];
 		Time t0 = vars.ftkSpreadedCurveHandle->timeFromReference(mat0);
 		Time ti = vars.ftkSpreadedCurveHandle->timeFromReference(mat1);
-		Rate zero = vars.ftkSpreadedCurveHandle->zeroRate(ti, Continuous, NoFrequency, true).rate();
-		Rate forward = vars.ftkSpreadedCurveHandle->forwardRate(t0, ti, Continuous, NoFrequency, true).rate();
+		Rate zero = vars.ftkSpreadedCurveHandle->zeroRate(ti, Continuous, Annual, true).rate();
+		Rate forward = vars.ftkSpreadedCurveHandle->forwardRate(t0, ti, Continuous, Annual, true).rate();
 		Rate df = vars.ftkSpreadedCurveHandle->discount(ti, true);
 		std::pair<Rate, Rate> temp = std::make_pair(df, forward);
 		//td::cout << "Tenor : " << tenors_intp[i] << "ZeroSpot + LP " << zero << ", forward = " << forward << std::endl;
@@ -961,6 +982,24 @@ void write_csv2(std::string fileName, std::map < Date, std::pair<Rate, Rate>> da
 	}
 	myFile.close();
 }
+
+
+void write_csvLH(std::string fileName, std::map < Date, std::pair<Rate, Rate>> dataset)
+{
+	std::ofstream myFile(fileName);
+	myFile << "# Format: ConventionKey;Type;Tenor;Interval;StartDate;EndDate;MidRate;Spread";
+	//KRWIRS2;DF;2020-12-31;;;;1.00000000;0.00000000
+	//KRWIRS2; DF; 2021 - 01 - 31;;;; 0.999694159662227; 0.00000000
+	myFile << "\n";
+	for (std::map<Date, std::pair<Rate, Rate>>::iterator iter = dataset.begin(); iter != dataset.end(); iter++)
+	{
+
+		myFile  <<"KRWIRS;DF;" << detail::iso_date_holder(iter->first) << ";;;;" << iter->second.first << ";0.0000000" ;
+		myFile << "\n";
+	}
+	myFile.close();
+}
+
 int main()
 {
 
@@ -969,12 +1008,14 @@ int main()
 		AlternativeUltimateForwardTermStructure::CCPinterpolatedCurve();
 		AlternativeUltimateForwardTermStructure::CCPExtrapolatedForward();
 
+
+
 		std::map<Date, std::pair<Rate, Rate>>temp = AlternativeUltimateForwardTermStructure::setExport();
 		std::map<Date, std::pair<Rate, Rate>>temp2 = AlternativeUltimateForwardTermStructure::getDF();
 		std::map<Date, std::pair<Rate, Rate>>tempCCP = AlternativeUltimateForwardTermStructure::setCCPExport();
 		std::map<Date, std::pair<Rate, Rate>>tempCCPDF = AlternativeUltimateForwardTermStructure::getCCPDF();
 
-
+		
 		std::cout << "Date | Zero Rate | Forward 1Y Rate " << std::endl;
 		for (std::map<Date, std::pair<Rate, Rate>>::iterator iter = temp.begin(); iter != temp.end(); iter++)
 		{
@@ -1003,6 +1044,7 @@ int main()
 
 		write_csv2("dataCCP.csv", tempCCP);
 		write_csv2("dataCCPDF.csv", tempCCPDF);
+		write_csvLH("LHfile.csv", temp2);
 		return 0;
 	
 }
