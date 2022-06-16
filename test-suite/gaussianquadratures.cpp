@@ -103,9 +103,9 @@ namespace gaussian_quadratures_test {
         testSingle(I, "f(x) = x^2",
                    [](Real x){ return x * x; }, 2/3.);
         testSingle(I, "f(x) = sin(x)",
-                   static_cast<Real(*)(Real)>(std::sin), 0.0);
+                   [](Real x) { return std::sin(x); }, 0.0);
         testSingle(I, "f(x) = cos(x)",
-                   static_cast<Real(*)(Real)>(std::cos),
+                   [](Real x) { return std::cos(x); },
                    std::sin(1.0)-std::sin(-1.0));
         testSingle(I, "f(x) = Gaussian(x)",
                    NormalDistribution(),
@@ -258,7 +258,7 @@ void GaussianQuadraturesTest::testNonCentralChiSquaredSumOfNodes() {
 
 	 for (Size n = 4; n < 10; ++n) {
 		 const Array x = GaussianQuadrature(n, orthPoly).x();
-         const Real calculated = std::accumulate(x.begin(), x.end(), 0.0);
+         const Real calculated = std::accumulate(x.begin(), x.end(), Real(0.0));
 
 
          if (std::fabs(calculated - expected[n-4]) > tol) {
