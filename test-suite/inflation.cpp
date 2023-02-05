@@ -261,23 +261,16 @@ void InflationTest::testZeroTermStructure() {
 
     const Real eps = 1.0e-6;
     auto engine = ext::make_shared<DiscountingSwapEngine>(nominalTS);
-    
-    for (Size i=0; i<zcData.size(); i++) {
-        ZeroCouponInflationSwap nzcis(Swap::Payer,
-                                      1000000.0,
-                                      evaluationDate,
-                                      zcData[i].date,
-                                      calendar, bdc, dc,
-                                      zcData[i].rate/100.0,
-                                      ii, observationLag,
-                                      CPI::AsIndex);
+
+    for (auto& i : zcData) {
+        ZeroCouponInflationSwap nzcis(Swap::Payer, 1000000.0, evaluationDate, i.date, calendar, bdc,
+                                      dc, i.rate / 100.0, ii, observationLag, CPI::AsIndex);
         nzcis.setPricingEngine(engine);
 
         BOOST_CHECK_MESSAGE(std::fabs(nzcis.NPV()) < eps,
                             "zero-coupon inflation swap does not reprice to zero"
-                            << "\n    NPV:      " << nzcis.NPV()
-                            << "\n    maturity: " << nzcis.maturityDate()
-                            << "\n    rate:     " << zcData[i].rate);
+                                << "\n    NPV:      " << nzcis.NPV() << "\n    maturity: "
+                                << nzcis.maturityDate() << "\n    rate:     " << i.rate);
     }
 
     //===========================================================================================
@@ -332,23 +325,16 @@ void InflationTest::testZeroTermStructure() {
         ext::make_shared<MultiplicativePriceSeasonality>(seasonalityBaseDate, Monthly, seasonalityFactors);
 
     pZITS->setSeasonality(nonUnitSeasonality);
-    
-    for (Size i=0; i<zcData.size(); i++) {
-        ZeroCouponInflationSwap nzcis(Swap::Payer,
-                                      1000000.0,
-                                      evaluationDate,
-                                      zcData[i].date,
-                                      calendar, bdc, dc,
-                                      zcData[i].rate/100.0,
-                                      ii, observationLag,
-                                      CPI::AsIndex);
+
+    for (auto& i : zcData) {
+        ZeroCouponInflationSwap nzcis(Swap::Payer, 1000000.0, evaluationDate, i.date, calendar, bdc,
+                                      dc, i.rate / 100.0, ii, observationLag, CPI::AsIndex);
         nzcis.setPricingEngine(engine);
 
         BOOST_CHECK_MESSAGE(std::fabs(nzcis.NPV()) < eps,
                             "zero-coupon inflation swap does not reprice to zero"
-                            << "\n    NPV:      " << nzcis.NPV()
-                            << "\n    maturity: " << nzcis.maturityDate()
-                            << "\n    rate:     " << zcData[i].rate);
+                                << "\n    NPV:      " << nzcis.NPV() << "\n    maturity: "
+                                << nzcis.maturityDate() << "\n    rate:     " << i.rate);
     }
 
     //==============================================================================
@@ -379,23 +365,16 @@ void InflationTest::testZeroTermStructure() {
 
     //===========================================================================================
     // Test zero coupon swaps
-    
-    for (Size i=0; i<zcData.size(); i++) {
-        ZeroCouponInflationSwap nzcis(Swap::Payer,
-                                      1000000.0,
-                                      evaluationDate,
-                                      zcData[i].date,
-                                      calendar, bdc, dc,
-                                      zcData[i].rate/100.0,
-                                      iiyes, observationLag,
-                                      CPI::AsIndex);
+
+    for (auto& i : zcData) {
+        ZeroCouponInflationSwap nzcis(Swap::Payer, 1000000.0, evaluationDate, i.date, calendar, bdc,
+                                      dc, i.rate / 100.0, iiyes, observationLag, CPI::AsIndex);
         nzcis.setPricingEngine(engine);
 
         BOOST_CHECK_MESSAGE(std::fabs(nzcis.NPV()) < eps,
                             "zero-coupon inflation swap does not reprice to zero"
-                            << "\n    NPV:      " << nzcis.NPV()
-                            << "\n    maturity: " << nzcis.maturityDate()
-                            << "\n    rate:     " << zcData[i].rate);
+                                << "\n    NPV:      " << nzcis.NPV() << "\n    maturity: "
+                                << nzcis.maturityDate() << "\n    rate:     " << i.rate);
     }
 
     //===========================================================================================
@@ -403,22 +382,15 @@ void InflationTest::testZeroTermStructure() {
 
     pZITSyes->setSeasonality(nonUnitSeasonality);
 
-    for (Size i=0; i<zcData.size(); i++) {
-        ZeroCouponInflationSwap nzcis(Swap::Payer,
-                                      1000000.0,
-                                      evaluationDate,
-                                      zcData[i].date,
-                                      calendar, bdc, dc,
-                                      zcData[i].rate/100.0,
-                                      iiyes, observationLag,
-                                      CPI::AsIndex);
+    for (auto& i : zcData) {
+        ZeroCouponInflationSwap nzcis(Swap::Payer, 1000000.0, evaluationDate, i.date, calendar, bdc,
+                                      dc, i.rate / 100.0, iiyes, observationLag, CPI::AsIndex);
         nzcis.setPricingEngine(engine);
 
         BOOST_CHECK_MESSAGE(std::fabs(nzcis.NPV()) < eps,
                             "zero-coupon inflation swap does not reprice to zero"
-                            << "\n    NPV:      " << nzcis.NPV()
-                            << "\n    maturity: " << nzcis.maturityDate()
-                            << "\n    rate:     " << zcData[i].rate);
+                                << "\n    NPV:      " << nzcis.NPV() << "\n    maturity: "
+                                << nzcis.maturityDate() << "\n    rate:     " << i.rate);
     }
 
     // remove circular refernce
