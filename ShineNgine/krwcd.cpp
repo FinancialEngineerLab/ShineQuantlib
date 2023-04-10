@@ -1,4 +1,7 @@
-#include "KRWCD.hpp"
+#include "krwcd.hpp"
+#include <ql/time/calendars/southkorea.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
+#include <ql/currencies/asia.hpp>
 
 namespace QuantLib {
 
