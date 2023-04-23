@@ -69,6 +69,7 @@ namespace QuantLib {
         //! creates the array from an iterable sequence
         template <class ForwardIterator>
         Array(ForwardIterator begin, ForwardIterator end);
+        ~Array() = default;
 
         Array& operator=(const Array&);
         Array& operator=(Array&&) noexcept;
@@ -137,7 +138,7 @@ namespace QuantLib {
         //! \name Utilities
         //@{
         void resize(Size n);
-        void swap(Array&);  // never throws
+        void swap(Array&) noexcept;
         //@}
 
       private:
@@ -271,7 +272,7 @@ namespace QuantLib {
 
     // utilities
     /*! \relates Array */
-    void swap(Array&, Array&);
+    void swap(Array&, Array&) noexcept;
 
     // format
     /*! \relates Array */
@@ -542,10 +543,9 @@ namespace QuantLib {
         }
     }
 
-    inline void Array::swap(Array& from) {
-        using std::swap;
+    inline void Array::swap(Array& from) noexcept {
         data_.swap(from.data_);
-        swap(n_,from.n_);
+        std::swap(n_, from.n_);
     }
 
     // dot product and norm
@@ -615,7 +615,7 @@ namespace QuantLib {
         return result;
     }
 
-    inline Array operator+(Array&& v1, Array&& v2) {
+    inline Array operator+(Array&& v1, Array&& v2) { // NOLINT(cppcoreguidelines-rvalue-reference-param-not-moved)
         QL_REQUIRE(v1.size() == v2.size(),
                    "arrays with different sizes (" << v1.size() << ", "
                    << v2.size() << ") cannot be added");
@@ -675,7 +675,7 @@ namespace QuantLib {
         return result;
     }
 
-    inline Array operator-(Array&& v1, Array&& v2) {
+    inline Array operator-(Array&& v1, Array&& v2) { // NOLINT(cppcoreguidelines-rvalue-reference-param-not-moved)
         QL_REQUIRE(v1.size() == v2.size(),
                    "arrays with different sizes (" << v1.size() << ", "
                    << v2.size() << ") cannot be subtracted");
@@ -735,7 +735,7 @@ namespace QuantLib {
         return result;
     }
 
-    inline Array operator*(Array&& v1, Array&& v2) {
+    inline Array operator*(Array&& v1, Array&& v2) { // NOLINT(cppcoreguidelines-rvalue-reference-param-not-moved)
         QL_REQUIRE(v1.size() == v2.size(),
                    "arrays with different sizes (" << v1.size() << ", "
                    << v2.size() << ") cannot be multiplied");
@@ -795,7 +795,7 @@ namespace QuantLib {
         return result;
     }
 
-    inline Array operator/(Array&& v1, Array&& v2) {
+    inline Array operator/(Array&& v1, Array&& v2) { // NOLINT(cppcoreguidelines-rvalue-reference-param-not-moved)
         QL_REQUIRE(v1.size() == v2.size(),
                    "arrays with different sizes (" << v1.size() << ", "
                    << v2.size() << ") cannot be divided");
@@ -900,7 +900,7 @@ namespace QuantLib {
         return result;
     }
 
-    inline void swap(Array& v, Array& w) {
+    inline void swap(Array& v, Array& w) noexcept {
         v.swap(w);
     }
 
