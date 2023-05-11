@@ -47,9 +47,15 @@ function(generate_dir_headers source_dir binary_dir)
     list(FILTER children_hpp EXCLUDE REGEX "swaptionvolcube1.hpp")
     list(FILTER children_hpp EXCLUDE REGEX "swaptionvolcube2.hpp")
     list(FILTER children_hpp EXCLUDE REGEX "swaptionvolcube1a.hpp")
-    list(FILTER children_hpp EXCLUDE REGEX "amortizingfixedratebond.hpp")
-    list(FILTER children_hpp EXCLUDE REGEX "amortizingfloatingratebond.hpp")
-    list(FILTER children_hpp EXCLUDE REGEX "amortizingcmsratebond.hpp")
+
+    # The ql/experimental/amortizingbonds have been moved to ql/instruments/bonds
+    # Therefore, we can ignore them as they only contain a warning and the new includes.
+    if (${source_dir} MATCHES "experimental" AND ${source_dir} MATCHES "amortizingbonds")
+        list(FILTER children_hpp EXCLUDE REGEX "amortizingfixedratebond.hpp")
+        list(FILTER children_hpp EXCLUDE REGEX "amortizingfloatingratebond.hpp")
+        list(FILTER children_hpp EXCLUDE REGEX "amortizingcmsratebond.hpp")
+    endif ()
+
     list(FILTER children_hpp EXCLUDE REGEX "riskybond.hpp")
     list(FILTER children_hpp EXCLUDE REGEX "composite.hpp")
     list(FILTER children_hpp EXCLUDE REGEX "lexicographicalview.hpp")

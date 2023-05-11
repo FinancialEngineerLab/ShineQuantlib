@@ -1240,12 +1240,12 @@ void DayCounterTest::testActualConsistency() {
             const Time t360incl = actual360incl.yearFraction(today, d);
             const Time t36525 = actual36525.yearFraction(today, d);
 
-            BOOST_CHECK_SMALL(t365*365/366.0 - t366, 1e-14);
-            BOOST_CHECK_SMALL(t365*365/364.0 - t364, 1e-14);
-            BOOST_CHECK_SMALL(t365*365/360.0 - t360, 1e-14);
-            BOOST_CHECK_SMALL(t365*365/364.0 - t364, 1e-14);
-            BOOST_CHECK_SMALL(t365*365/365.25 - t36525, 1e-14);
-            BOOST_CHECK_SMALL(t365*365/360.0 - (t360incl*360-1)/360, 1e-14);
+            QL_CHECK_SMALL(t365*365/366.0 - t366, 1e-14);
+            QL_CHECK_SMALL(t365*365/364.0 - t364, 1e-14);
+            QL_CHECK_SMALL(t365*365/360.0 - t360, 1e-14);
+            QL_CHECK_SMALL(t365*365/364.0 - t364, 1e-14);
+            QL_CHECK_SMALL(t365*365/365.25 - t36525, 1e-14);
+            QL_CHECK_SMALL(t365*365/360.0 - (t360incl*360-1)/360, 1e-14);
         }
 }
 
@@ -1281,7 +1281,7 @@ void DayCounterTest::testYearFraction2DateBulk() {
         SimpleDayCounter()
     };
 
-    for (auto dc: dayCounters)
+    for (const auto& dc : dayCounters)
         for (Integer i=-360; i < 730; ++i) {
             const Date today = Date(1, January, 2020) + Period(i, Days);
             const Date target = today + Period(i, Days);
@@ -1309,7 +1309,7 @@ void DayCounterTest::testYearFraction2DateRounding() {
         = {Thirty360(Thirty360::USA), Actual360()};
     const Date d1(1, February, 2023), d2(17, February, 2124);
 
-    for (DayCounter dc: dayCounters) {
+    for (const DayCounter& dc : dayCounters) {
         Time t = dc.yearFraction(d1, d2);
         for (Time offset = 0; offset < 1 + 1e-10; offset+=0.05) {
             const Date inv = yearFractionToDate(dc, d1, t + offset/360);
