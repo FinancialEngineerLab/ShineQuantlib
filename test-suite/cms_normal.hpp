@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2016 Peter Caspers
+ Copyright (C) 2023 Andre Miemiec
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,17 +17,20 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file null_deleter.hpp
-    \brief empty deleter for shared_ptr
-*/
+#ifndef quantlib_test_cms_normal_hpp
+#define quantlib_test_cms_normal_hpp
 
-#ifndef quantlib_nulldeleter_hpp
-#define quantlib_nulldeleter_hpp
+#include <boost/test/unit_test.hpp>
 
-namespace QuantLib {
-struct null_deleter {
-    template <typename T> void operator()(T *) const noexcept {}
+/* remember to document new and/or updated tests in the Doxygen
+   comment block of the corresponding class */
+
+class CmsNormalTest {
+  public:
+    static void testFairRate();
+    static void testParity();
+    static void testCmsSwap();
+    static boost::unit_test_framework::test_suite* suite();
 };
-}
 
 #endif
