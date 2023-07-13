@@ -11,8 +11,8 @@ set(QUANTLIB_VERSION ${QUANTLIB_VERSION_MAJOR}.${QUANTLIB_VERSION_MINOR}.${QUANT
 
 # Project Info
 set(PACKAGE_NAME          "QuantLib")
-set(PACKAGE_VERSION       "${QUANTLIB_VERSION}-rc")
-set(PACKAGE_VERSION_HEX   "0x013100c0")
+set(PACKAGE_VERSION       "${QUANTLIB_VERSION}rc2")
+set(PACKAGE_VERSION_HEX   "0x013100c2")
 set(PACKAGE_STRING        "${PACKAGE_NAME} ${PACKAGE_VERSION}")
 set(PACKAGE_TARNAME       "${PACKAGE_NAME}-${PACKAGE_VERSION}")
 set(PACKAGE_BUGREPORT     "https://github.com/lballabio/QuantLib/issues/")
@@ -54,6 +54,7 @@ option(QL_ERROR_LINES "Error messages should include file and line information" 
 option(QL_EXTRA_SAFETY_CHECKS "Extra safety checks should be performed" OFF)
 option(QL_HIGH_RESOLUTION_DATE "Enable date resolution down to microseconds" OFF)
 option(QL_THROW_IN_CYCLES "Throw an exception when a notification loop is detected" OFF)
+option(QL_FASTER_LAZY_OBJECTS "Cause lazy objects to forward just the first notification instead of every one" ON)
 option(QL_NULL_AS_FUNCTIONS "Enable the implementation of Null as template functions" OFF)
 option(QL_INSTALL_BENCHMARK "Install benchmark" ON)
 option(QL_INSTALL_EXAMPLES "Install examples" ON)
