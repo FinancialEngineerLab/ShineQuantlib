@@ -19,30 +19,30 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "americanoption.hpp"
+#include "preconditions.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/any.hpp>
-#include <ql/time/daycounters/actual360.hpp>
-#include <ql/time/daycounters/thirty360.hpp>
 #include <ql/instruments/vanillaoption.hpp>
-#include <ql/math/functional.hpp>
-#include <ql/math/randomnumbers/rngtraits.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
-#include <ql/math/integrals/integral.hpp>
+#include <ql/math/functional.hpp>
 #include <ql/math/integrals/gausslobattointegral.hpp>
+#include <ql/math/integrals/integral.hpp>
+#include <ql/math/randomnumbers/rngtraits.hpp>
 #include <ql/math/statistics/incrementalstatistics.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/baroneadesiwhaleyengine.hpp>
 #include <ql/pricingengines/vanilla/bjerksundstenslandengine.hpp>
-#include <ql/pricingengines/vanilla/juquadraticengine.hpp>
-#include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
 #include <ql/pricingengines/vanilla/fdblackscholesshoutengine.hpp>
+#include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
+#include <ql/pricingengines/vanilla/juquadraticengine.hpp>
 #include <ql/pricingengines/vanilla/qdfpamericanengine.hpp>
 #include <ql/pricingengines/vanilla/qdplusamericanengine.hpp>
-#include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/time/daycounters/actual360.hpp>
+#include <ql/time/daycounters/thirty360.hpp>
 #include <ql/utilities/dataformatters.hpp>
-
 #include <map>
 
 using namespace QuantLib;
@@ -83,8 +83,11 @@ namespace {
 
 }
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-void AmericanOptionTest::testBaroneAdesiWhaleyValues() {
+BOOST_AUTO_TEST_SUITE(AmericanOptionTest)
+
+BOOST_AUTO_TEST_CASE(testBaroneAdesiWhaleyValues) {
 
     BOOST_TEST_MESSAGE("Testing Barone-Adesi and Whaley approximation "
                        "for American options...");
@@ -184,8 +187,7 @@ void AmericanOptionTest::testBaroneAdesiWhaleyValues() {
     }
 }
 
-
-void AmericanOptionTest::testBjerksundStenslandValues() {
+BOOST_AUTO_TEST_CASE(testBjerksundStenslandValues) {
 
     BOOST_TEST_MESSAGE("Testing Bjerksund and Stensland approximation "
                        "for American options...");
@@ -330,8 +332,7 @@ namespace {
 
 }
 
-
-void AmericanOptionTest::testJuValues() {
+BOOST_AUTO_TEST_CASE(testJuValues) {
 
     BOOST_TEST_MESSAGE("Testing Ju approximation for American options...");
 
@@ -381,8 +382,7 @@ void AmericanOptionTest::testJuValues() {
     }
 }
 
-
-void AmericanOptionTest::testFdValues() {
+BOOST_AUTO_TEST_CASE(testFdValues) {
 
     BOOST_TEST_MESSAGE("Testing finite-difference and QR+ engine "
                        "for American options...");
@@ -563,18 +563,17 @@ namespace {
 
 }
 
-
-void AmericanOptionTest::testFdAmericanGreeks() {
+BOOST_AUTO_TEST_CASE(testFdAmericanGreeks) {
     BOOST_TEST_MESSAGE("Testing finite-differences American option greeks...");
     testFdGreeks<FdBlackScholesVanillaEngine>();
 }
 
-void AmericanOptionTest::testFdShoutGreeks() {
+BOOST_AUTO_TEST_CASE(testFdShoutGreeks, *precondition(if_speed(Fast))) {
     BOOST_TEST_MESSAGE("Testing finite-differences shout option greeks...");
     testFdGreeks<FdBlackScholesShoutEngine>();
 }
 
-void AmericanOptionTest::testFDShoutNPV() {
+BOOST_AUTO_TEST_CASE(testFDShoutNPV) {
     BOOST_TEST_MESSAGE("Testing finite-differences shout option pricing...");
 
     const auto dc = Actual365Fixed();
@@ -631,7 +630,7 @@ void AmericanOptionTest::testFDShoutNPV() {
     }
 }
 
-void AmericanOptionTest::testZeroVolFDShoutNPV() {
+BOOST_AUTO_TEST_CASE(testZeroVolFDShoutNPV) {
     BOOST_TEST_MESSAGE("Testing zero volatility shout option pricing with discrete dividends...");
 
     const auto dc = Actual365Fixed();
@@ -710,7 +709,7 @@ void AmericanOptionTest::testZeroVolFDShoutNPV() {
    }
 }
 
-void AmericanOptionTest::testLargeDividendShoutNPV() {
+BOOST_AUTO_TEST_CASE(testLargeDividendShoutNPV) {
     BOOST_TEST_MESSAGE("Testing zero strike shout option pricing with discrete dividends...");
 
     const auto dc = Actual365Fixed();
@@ -792,7 +791,7 @@ void AmericanOptionTest::testLargeDividendShoutNPV() {
    }
 }
 
-void AmericanOptionTest::testEscrowedVsSpotAmericanOption() {
+BOOST_AUTO_TEST_CASE(testEscrowedVsSpotAmericanOption) {
     BOOST_TEST_MESSAGE("Testing escrowed vs spot dividend model for American options...");
 
     const auto dc = Actual360();
@@ -863,8 +862,7 @@ void AmericanOptionTest::testEscrowedVsSpotAmericanOption() {
    }
 }
 
-
-void AmericanOptionTest::testTodayIsDividendDate() {
+BOOST_AUTO_TEST_CASE(testTodayIsDividendDate) {
     BOOST_TEST_MESSAGE("Testing escrowed vs spot dividend model on dividend dates for American options...");
 
     const auto dc = Actual360();
@@ -982,8 +980,7 @@ void AmericanOptionTest::testTodayIsDividendDate() {
     }
 }
 
-
-void AmericanOptionTest::testCallPutParity() {
+BOOST_AUTO_TEST_CASE(testCallPutParity) {
     BOOST_TEST_MESSAGE("Testing call/put parity for American options...");
 
     // R.L. McDonald, M.D. Schroder: A parity result for American option
@@ -1071,7 +1068,7 @@ void AmericanOptionTest::testCallPutParity() {
     }
 }
 
-void AmericanOptionTest::testQdPlusBoundaryValues() {
+BOOST_AUTO_TEST_CASE(testQdPlusBoundaryValues) {
     BOOST_TEST_MESSAGE("Testing QD+ boundary approximation...");
 
     const DayCounter dc = Actual365Fixed();
@@ -1122,7 +1119,7 @@ void AmericanOptionTest::testQdPlusBoundaryValues() {
     }
 }
 
-void AmericanOptionTest::testQdPlusBoundaryConvergence() {
+BOOST_AUTO_TEST_CASE(testQdPlusBoundaryConvergence) {
     BOOST_TEST_MESSAGE("Testing QD+ boundary convergence...");
 
     const DayCounter dc = Actual365Fixed();
@@ -1187,7 +1184,7 @@ void AmericanOptionTest::testQdPlusBoundaryConvergence() {
     }
 }
 
-void AmericanOptionTest::testQdAmericanEngines() {
+BOOST_AUTO_TEST_CASE(testQdAmericanEngines) {
     BOOST_TEST_MESSAGE("Testing QD+ American option pricing...");
 
     const DayCounter dc = Actual365Fixed();
@@ -1432,7 +1429,7 @@ void AmericanOptionTest::testQdAmericanEngines() {
     };
 }
 
-void AmericanOptionTest::testQdFpIterationScheme() {
+BOOST_AUTO_TEST_CASE(testQdFpIterationScheme) {
     BOOST_TEST_MESSAGE("Testing Legendre and tanh-sinh iteration "
                        "scheme for QD+ fixed-point American engine...");
 
@@ -1459,8 +1456,7 @@ void AmericanOptionTest::testQdFpIterationScheme() {
     }
 }
 
-
-void AmericanOptionTest::testAndersenLakeHighPrecisionExample() {
+BOOST_AUTO_TEST_CASE(testAndersenLakeHighPrecisionExample) {
     BOOST_TEST_MESSAGE("Testing Andersen, Lake and Offengenden "
                         "high precision example...");
 
@@ -1556,8 +1552,7 @@ void AmericanOptionTest::testAndersenLakeHighPrecisionExample() {
     }
 }
 
-
-void AmericanOptionTest::testQdEngineStandardExample() {
+BOOST_AUTO_TEST_CASE(testQdEngineStandardExample) {
     BOOST_TEST_MESSAGE("Testing Andersen, Lake and Offengenden "
                         "standard example...");
 
@@ -1649,7 +1644,7 @@ namespace {
     };
 }
 
-void AmericanOptionTest::testBulkQdFpAmericanEngine() {
+BOOST_AUTO_TEST_CASE(testBulkQdFpAmericanEngine) {
     BOOST_TEST_MESSAGE("Testing Andersen, Lake and Offengenden "
                         "bulk examples...");
 
@@ -1758,7 +1753,7 @@ void AmericanOptionTest::testBulkQdFpAmericanEngine() {
                 << "\n    tol     : " << tolMax);
 }
 
-void AmericanOptionTest::testQdEngineWithLobattoIntegral() {
+BOOST_AUTO_TEST_CASE(testQdEngineWithLobattoIntegral) {
     BOOST_TEST_MESSAGE("Testing Andersen, Lake and Offengenden "
                         "with high precision Gauss-Lobatto integration...");
 
@@ -1825,7 +1820,7 @@ void AmericanOptionTest::testQdEngineWithLobattoIntegral() {
     }
 }
 
-void AmericanOptionTest::testQdNegativeDividendYield() {
+BOOST_AUTO_TEST_CASE(testQdNegativeDividendYield) {
     BOOST_TEST_MESSAGE("Testing Andersen, Lake and Offengenden "
                         "with positive or zero interest rate and "
                         "negative dividend yield...");
@@ -1896,7 +1891,7 @@ void AmericanOptionTest::testQdNegativeDividendYield() {
     }
 }
 
-void AmericanOptionTest::testBjerksundStenslandEuropeanGreeks() {
+BOOST_AUTO_TEST_CASE(testBjerksundStenslandEuropeanGreeks) {
     BOOST_TEST_MESSAGE("Testing Bjerksund-Stensland greeks when early "
                        "exercise is not optimal...");
 
@@ -1973,8 +1968,7 @@ void AmericanOptionTest::testBjerksundStenslandEuropeanGreeks() {
     }
 }
 
-
-void AmericanOptionTest::testBjerksundStenslandAmericanGreeks() {
+BOOST_AUTO_TEST_CASE(testBjerksundStenslandAmericanGreeks) {
     BOOST_TEST_MESSAGE("Testing Bjerksund-Stensland American greeks...");
 
     const Date today = Date(5, December, 2022);
@@ -2164,8 +2158,7 @@ void AmericanOptionTest::testBjerksundStenslandAmericanGreeks() {
     }
 }
 
-
-void AmericanOptionTest::testSingleBjerksundStenslandGreeks() {
+BOOST_AUTO_TEST_CASE(testSingleBjerksundStenslandGreeks) {
     BOOST_TEST_MESSAGE("Testing a single Bjerksund-Stensland greeks set...");
 
     const Date today = Date(20, January, 2023);
@@ -2248,39 +2241,6 @@ void AmericanOptionTest::testSingleBjerksundStenslandGreeks() {
         BOOST_FAIL("American exercise type expected");
 }
 
+BOOST_AUTO_TEST_SUITE_END()
 
-test_suite* AmericanOptionTest::suite(SpeedLevel speed) {
-    auto* suite = BOOST_TEST_SUITE("American option tests");
-
-    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testBaroneAdesiWhaleyValues));
-    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testBjerksundStenslandValues));
-    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testJuValues));
-    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testFdValues));
-    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testFdAmericanGreeks));
-    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testFDShoutNPV));
-    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testZeroVolFDShoutNPV));
-    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testLargeDividendShoutNPV));
-    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testEscrowedVsSpotAmericanOption));
-    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testTodayIsDividendDate));
-    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testCallPutParity));
-    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdPlusBoundaryValues));
-    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdPlusBoundaryConvergence));
-    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdAmericanEngines));
-    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdFpIterationScheme));
-    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testAndersenLakeHighPrecisionExample));
-    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdEngineStandardExample));
-    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testBulkQdFpAmericanEngine));
-    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdEngineWithLobattoIntegral));
-    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdNegativeDividendYield));
-    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testBjerksundStenslandEuropeanGreeks));
-    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testBjerksundStenslandAmericanGreeks));
-    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testSingleBjerksundStenslandGreeks));
-
-
-    if (speed <= Fast) {
-        suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testFdShoutGreeks));
-    }
-
-    return suite;
-}
-
+BOOST_AUTO_TEST_SUITE_END()

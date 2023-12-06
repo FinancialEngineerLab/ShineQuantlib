@@ -19,19 +19,20 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "lookbackoptions.hpp"
+#include "preconditions.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
-#include <ql/time/daycounters/actual360.hpp>
 #include <ql/instruments/lookbackoption.hpp>
-#include <ql/pricingengines/lookback/analyticcontinuousfloatinglookback.hpp>
 #include <ql/pricingengines/lookback/analyticcontinuousfixedlookback.hpp>
-#include <ql/pricingengines/lookback/analyticcontinuouspartialfloatinglookback.hpp>
+#include <ql/pricingengines/lookback/analyticcontinuousfloatinglookback.hpp>
 #include <ql/pricingengines/lookback/analyticcontinuouspartialfixedlookback.hpp>
+#include <ql/pricingengines/lookback/analyticcontinuouspartialfloatinglookback.hpp>
 #include <ql/pricingengines/lookback/mclookbackengine.hpp>
-#include <ql/termstructures/yield/flatforward.hpp>
-#include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
-#include <ql/utilities/dataformatters.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
+#include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/time/daycounters/actual360.hpp>
+#include <ql/utilities/dataformatters.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -106,8 +107,11 @@ namespace {
 
 }
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-void LookbackOptionTest::testAnalyticContinuousFloatingLookback() {
+BOOST_AUTO_TEST_SUITE(LookbackOptionTest)
+
+BOOST_AUTO_TEST_CASE(testAnalyticContinuousFloatingLookback) {
 
     BOOST_TEST_MESSAGE(
            "Testing analytic continuous floating-strike lookback options...");
@@ -178,8 +182,7 @@ void LookbackOptionTest::testAnalyticContinuousFloatingLookback() {
     }
 }
 
-
-void LookbackOptionTest::testAnalyticContinuousFixedLookback() {
+BOOST_AUTO_TEST_CASE(testAnalyticContinuousFixedLookback) {
 
     BOOST_TEST_MESSAGE(
               "Testing analytic continuous fixed-strike lookback options...");
@@ -272,7 +275,7 @@ void LookbackOptionTest::testAnalyticContinuousFixedLookback() {
     }
 }
 
-void LookbackOptionTest::testAnalyticContinuousPartialFloatingLookback() {
+BOOST_AUTO_TEST_CASE(testAnalyticContinuousPartialFloatingLookback) {
 
     BOOST_TEST_MESSAGE(
            "Testing analytic continuous partial floating-strike lookback options...");
@@ -380,7 +383,7 @@ void LookbackOptionTest::testAnalyticContinuousPartialFloatingLookback() {
     }
 }
 
-void LookbackOptionTest::testAnalyticContinuousPartialFixedLookback() {
+BOOST_AUTO_TEST_CASE(testAnalyticContinuousPartialFixedLookback) {
 
     BOOST_TEST_MESSAGE(
               "Testing analytic continuous fixed-strike lookback options...");
@@ -485,7 +488,7 @@ void LookbackOptionTest::testAnalyticContinuousPartialFixedLookback() {
     }
 }
 
-void LookbackOptionTest::testMonteCarloLookback() {
+BOOST_AUTO_TEST_CASE(testMonteCarloLookback, *precondition(if_speed(Slow))) {
     BOOST_TEST_MESSAGE("Testing Monte Carlo engines for lookback options...");
 
     Real tolerance = 0.1;
@@ -657,19 +660,6 @@ void LookbackOptionTest::testMonteCarloLookback() {
     }
 }
 
+BOOST_AUTO_TEST_SUITE_END()
 
-test_suite* LookbackOptionTest::suite(SpeedLevel speed) {
-    auto* suite = BOOST_TEST_SUITE("Lookback option tests");
-
-    suite->add(QUANTLIB_TEST_CASE(&LookbackOptionTest::testAnalyticContinuousFloatingLookback));
-    suite->add(QUANTLIB_TEST_CASE(&LookbackOptionTest::testAnalyticContinuousFixedLookback));
-    suite->add(QUANTLIB_TEST_CASE(&LookbackOptionTest::testAnalyticContinuousPartialFloatingLookback));
-    suite->add(QUANTLIB_TEST_CASE(&LookbackOptionTest::testAnalyticContinuousPartialFixedLookback));
-
-    if (speed == Slow) {
-        suite->add(QUANTLIB_TEST_CASE(&LookbackOptionTest::testMonteCarloLookback));
-    }
-
-    return suite;
-}
-
+BOOST_AUTO_TEST_SUITE_END()
