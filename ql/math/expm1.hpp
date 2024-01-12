@@ -1,8 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2009 StatPro Italia srl
- Copyright (C) 2019 Aprexo Limited
+ Copyright (C) 2023 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,34 +17,19 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file version.hpp
-    \brief Version number, and version of boost the library is compiled with
+ /*! \file expm1.hpp
+    \brief complex versions of expm1 and logp1
 */
 
-#ifndef quantlib_version_hpp
-#define quantlib_version_hpp
+#ifndef quantlib_expm1_hpp
+#define quantlib_expm1_hpp
 
-#include <ql/qldefines.hpp>
-
-/*! \addtogroup macros */
-/*! @{ */
-
-//! version string
-#define QL_VERSION "1.33-rc"
-
-//! version hexadecimal number
-#define QL_HEX_VERSION 0x013300c0
-
-/*! @}  */
+#include <ql/types.hpp>
+#include <complex>
 
 namespace QuantLib {
-
-    /*! Returns the version of boost that the QuantLib library was built with
-        Use to check that client code is using a consistent version of boost.
-        Using QuantLib header files compiled with a different version of boost
-        than the library itself may result in undefined behaviour */
-    std::size_t compiledBoostVersion();
-
+    std::complex<Real> expm1(const std::complex<Real>& z);
+    std::complex<Real> log1p(const std::complex<Real>& z);
 }
-
 #endif
+

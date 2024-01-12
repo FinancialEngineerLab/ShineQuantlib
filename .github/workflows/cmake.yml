@@ -69,8 +69,8 @@ jobs:
     - name: Setup
       run: |
         $Url = "https://boostorg.jfrog.io/artifactory/main/release/1.84.0/binaries/boost_1_84_0-msvc-14.3-64.exe"
-        (New-Object System.Net.WebClient).DownloadFile($Url, "$env:TEMP\boost.exe")
-        Start-Process -Wait -FilePath "$env:TEMP\boost.exe" "/SILENT","/SP-","/SUPPRESSMSGBOXES","/DIR=C:\local\boost"
+        (New-Object System.Net.WebClient).DownloadFile($Url, "$RUNNER_TEMP\boost.exe")
+        Start-Process -Wait -FilePath "$RUNNER_TEMP\boost.exe" "/SILENT","/SP-","/SUPPRESSMSGBOXES","/DIR=C:\local\boost"
         choco install -y ninja
     - name: Compile
       env:
@@ -103,8 +103,8 @@ jobs:
     - name: Setup
       run: |
         $Url = "https://boostorg.jfrog.io/artifactory/main/release/1.84.0/binaries/boost_1_84_0-msvc-14.3-64.exe"
-        (New-Object System.Net.WebClient).DownloadFile($Url, "$env:TEMP\boost.exe")
-        Start-Process -Wait -FilePath "$env:TEMP\boost.exe" "/SILENT","/SP-","/SUPPRESSMSGBOXES","/DIR=C:\local\boost"
+        (New-Object System.Net.WebClient).DownloadFile($Url, "$RUNNER_TEMP\boost.exe")
+        Start-Process -Wait -FilePath "$RUNNER_TEMP\boost.exe" "/SILENT","/SP-","/SUPPRESSMSGBOXES","/DIR=C:\local\boost"
         choco install -y ninja
     - name: Compile
       env:
@@ -137,8 +137,8 @@ jobs:
     - name: Setup
       run: |
         $Url = "https://boostorg.jfrog.io/artifactory/main/release/1.84.0/binaries/boost_1_84_0-msvc-14.3-64.exe"
-        (New-Object System.Net.WebClient).DownloadFile($Url, "$env:TEMP\boost.exe")
-        Start-Process -Wait -FilePath "$env:TEMP\boost.exe" "/SILENT","/SP-","/SUPPRESSMSGBOXES","/DIR=C:\local\boost"
+        (New-Object System.Net.WebClient).DownloadFile($Url, "$RUNNER_TEMP\boost.exe")
+        Start-Process -Wait -FilePath "$RUNNER_TEMP\boost.exe" "/SILENT","/SP-","/SUPPRESSMSGBOXES","/DIR=C:\local\boost"
         choco install -y ninja
     - name: Compile
       env:
