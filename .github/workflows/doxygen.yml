@@ -4,14 +4,14 @@ jobs:
   docs:
     runs-on: macos-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Setup
       env:
         HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK: 1
       run: |
-        brew install automake boost doxygen graphviz
+        brew install automake autoconf libtool boost doxygen graphviz
         ./autogen.sh
-        ./configure
+        ./configure --with-boost-include=$(brew --prefix)/include
     - name: Doxygen version
       run: |
         doxygen --version
@@ -22,7 +22,7 @@ jobs:
   header-docs:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Check
       run: |
         ./tools/check_all_header_docs.sh

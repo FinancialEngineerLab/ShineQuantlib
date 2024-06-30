@@ -37,8 +37,9 @@ namespace QuantLib {
 
     LaplaceInterpolation::LaplaceInterpolation(std::function<Real(const std::vector<Size>&)> y,
                                                std::vector<std::vector<Real>> x,
-                                               const Real relTol)
-    : y_(std::move(y)), x_(std::move(x)), relTol_(relTol) {
+                                               Real relTol,
+                                               Size maxIterMultiplier)
+    : y_(std::move(y)), x_(std::move(x)), relTol_(relTol), maxIterMultiplier_(maxIterMultiplier) {
 
         // set up the mesher
 
@@ -61,9 +62,9 @@ namespace QuantLib {
         layout_ = ext::make_shared<FdmLinearOpLayout>(dim);
 
         std::vector<ext::shared_ptr<Fdm1dMesher>> meshers;
-        for (Size i = 0; i < x_.size(); ++i) {
-            if (x_[i].size() > 1)
-                meshers.push_back(ext::make_shared<Predefined1dMesher>(x_[i]));
+        for (auto & i : x_) {
+            if (i.size() > 1)
+                meshers.push_back(ext::make_shared<Predefined1dMesher>(i));
         }
 
         auto mesher = ext::make_shared<FdmMesherComposite>(layout_, meshers);
@@ -92,7 +93,8 @@ namespace QuantLib {
             Array preconditioner(const Array& r, Real s) const override { QL_FAIL("no impl"); }
             std::vector<SparseMatrix> toMatrixDecomp() const override {
                 std::vector<SparseMatrix> decomp;
-                for (auto const& m : map_)
+                decomp.reserve(map_.size());
+for (auto const& m : map_)
                     decomp.push_back(m.toMatrix());
                 return decomp;
             }
@@ -143,7 +145,7 @@ namespace QuantLib {
                     // handling of the "corners", all second derivs are zero in the op
                     // this directly generalizes Numerical Recipes, 3rd ed, eq 3.8.6
                     Real sum_corner_h =
-                        std::accumulate(corner_h.begin(), corner_h.end(), 0.0, std::plus<Real>());
+                        std::accumulate(corner_h.begin(), corner_h.end(), Real(0.0), std::plus<Real>());
                     for (Size j = 0; j < dim.size(); ++j) {
                         std::vector<Size> coord_j(coord);
                         coord_j[j] = corner_neighbour_index[j];
@@ -152,7 +154,7 @@ namespace QuantLib {
                             if (i != j)
                                 weight += corner_h[i];
                         }
-                        weight = dim.size() == 1 ? 1.0 : weight / sum_corner_h;
+                        weight = dim.size() == 1 ? Real(1.0) : Real(weight / sum_corner_h);
                         g(count, layout_->index(coord_j)) = -weight;
                     }
                     g(count, count) = 1.0;
@@ -172,7 +174,7 @@ namespace QuantLib {
             ++rowit;
         }
 
-        interpolatedValues_ = BiCGstab(f_A(g), 10 * N, relTol_).solve(rhs, guess).x;
+        interpolatedValues_ = BiCGstab(f_A(g), maxIterMultiplier_ * N, relTol_).solve(rhs, guess).x;
     }
 
     std::vector<Size>
@@ -212,7 +214,8 @@ namespace QuantLib {
     void laplaceInterpolation(Matrix& A,
                               const std::vector<Real>& x,
                               const std::vector<Real>& y,
-                              Real relTol) {
+                              Real relTol,
+                              Size maxIterMultiplier) {
 
         std::vector<std::vector<Real>> tmp;
         tmp.push_back(y);
@@ -232,7 +235,7 @@ namespace QuantLib {
             [&A](const std::vector<Size>& coordinates) {
                 return A(coordinates[0], coordinates[1]);
             },
-            tmp, relTol);
+            tmp, relTol, maxIterMultiplier);
 
         for (Size i = 0; i < A.rows(); ++i) {
             for (Size j = 0; j < A.columns(); ++j) {

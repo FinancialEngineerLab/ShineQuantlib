@@ -52,7 +52,10 @@ namespace QuantLib {
                              BusinessDayConvention paymentAdjustment = Following,
                              const Calendar& paymentCalendar = Calendar(),
                              bool telescopicValueDates = false,
-                             RateAveraging::Type averagingMethod = RateAveraging::Compound);
+                             RateAveraging::Type averagingMethod = RateAveraging::Compound,
+                             Natural lookbackDays = Null<Natural>(),
+                             Natural lockoutDays = 0,
+                             bool applyObservationShift = false);
 
         OvernightIndexedSwap(Type type,
                              const std::vector<Real>& nominals,
@@ -65,21 +68,27 @@ namespace QuantLib {
                              BusinessDayConvention paymentAdjustment = Following,
                              const Calendar& paymentCalendar = Calendar(),
                              bool telescopicValueDates = false,
-                             RateAveraging::Type averagingMethod = RateAveraging::Compound);
+                             RateAveraging::Type averagingMethod = RateAveraging::Compound,
+                             Natural lookbackDays = Null<Natural>(),
+                             Natural lockoutDays = 0,
+                             bool applyObservationShift = false);
 
         OvernightIndexedSwap(Type type,
                              Real nominal,
-                             const Schedule& fixedSchedule,
+                             Schedule fixedSchedule,
                              Rate fixedRate,
                              DayCounter fixedDC,
-                             const Schedule& overnightSchedule,
+                             Schedule overnightSchedule,
                              const ext::shared_ptr<OvernightIndex>& overnightIndex,
                              Spread spread = 0.0,
                              Integer paymentLag = 0,
                              BusinessDayConvention paymentAdjustment = Following,
                              const Calendar& paymentCalendar = Calendar(),
                              bool telescopicValueDates = false,
-                             RateAveraging::Type averagingMethod = RateAveraging::Compound);
+                             RateAveraging::Type averagingMethod = RateAveraging::Compound,
+                             Natural lookbackDays = Null<Natural>(),
+                             Natural lockoutDays = 0,
+                             bool applyObservationShift = false);
 
         OvernightIndexedSwap(Type type,
                              std::vector<Real> fixedNominals,
@@ -87,14 +96,17 @@ namespace QuantLib {
                              Rate fixedRate,
                              DayCounter fixedDC,
                              const std::vector<Real>& overnightNominals,
-                             const Schedule& overnightSchedule,
+                             Schedule overnightSchedule,
                              const ext::shared_ptr<OvernightIndex>& overnightIndex,
                              Spread spread = 0.0,
                              Integer paymentLag = 0,
                              BusinessDayConvention paymentAdjustment = Following,
                              const Calendar& paymentCalendar = Calendar(),
                              bool telescopicValueDates = false,
-                             RateAveraging::Type averagingMethod = RateAveraging::Compound);
+                             RateAveraging::Type averagingMethod = RateAveraging::Compound,
+                             Natural lookbackDays = Null<Natural>(),
+                             Natural lockoutDays = 0,
+                             bool applyObservationShift = false);
 
         //! \name Inspectors
         //@{
@@ -109,6 +121,9 @@ namespace QuantLib {
         const Leg& overnightLeg() const { return floatingLeg(); }
 
         RateAveraging::Type averagingMethod() const { return averagingMethod_; }
+        Natural lookbackDays() const { return lookbackDays_; }
+        Natural lockoutDays() const { return lockoutDays_; }
+        bool applyObservationShift() const { return applyObservationShift_; }
         //@}
 
         //! \name Results
@@ -121,6 +136,9 @@ namespace QuantLib {
 
         ext::shared_ptr<OvernightIndex> overnightIndex_;
         RateAveraging::Type averagingMethod_;
+        Natural lookbackDays_;
+        Natural lockoutDays_;
+        bool applyObservationShift_;
     };
 
 }

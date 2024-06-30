@@ -22,6 +22,7 @@
 #include "utilities.hpp"
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/instruments/capfloor.hpp>
+#include <ql/instruments/vanillaswap.hpp>
 #include <ql/legacy/libormarketmodels/lfmcovarproxy.hpp>
 #include <ql/legacy/libormarketmodels/lfmhullwhiteparam.hpp>
 #include <ql/legacy/libormarketmodels/lfmswaptionengine.hpp>
@@ -224,7 +225,7 @@ BOOST_AUTO_TEST_CASE(testCapletPricing) {
                     << "\n    expected:   " << expected);
 }
 
-BOOST_AUTO_TEST_CASE(testCalibration, *precondition(if_speed(Slow))) {
+BOOST_AUTO_TEST_CASE(testCalibration, *precondition(if_speed(Fast))) {
     BOOST_TEST_MESSAGE("Testing calibration of a Libor forward model...");
 
     const Size size = 14;

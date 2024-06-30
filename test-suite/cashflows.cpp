@@ -37,7 +37,6 @@
 #include <ql/indexes/ibor/sofr.hpp>
 #include <ql/optional.hpp>
 #include <ql/settings.hpp>
-#include <iomanip>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -394,11 +393,6 @@ BOOST_AUTO_TEST_CASE(testIrregularFirstCouponReferenceDatesAtEndOfCalendarMonth)
         .withNotionals(100.0)
         .withCouponRates(0.01875, ActualActual(ActualActual::ISMA));
 
-    for (const auto& elem : leg) {
-        BOOST_TEST_MESSAGE("Reference Period: " << ext::dynamic_pointer_cast<Coupon>(elem)->referencePeriodStart() << " - " << ext::dynamic_pointer_cast<Coupon>(elem)->referencePeriodEnd());
-        BOOST_TEST_MESSAGE("Amount: " << ext::dynamic_pointer_cast<Coupon>(elem)->amount());
-    }
-
     ext::shared_ptr<Coupon> firstCoupon =
         ext::dynamic_pointer_cast<Coupon>(leg.front());
     if (firstCoupon->referencePeriodStart() != Date(30, September, 2017))
@@ -566,6 +560,61 @@ BOOST_AUTO_TEST_CASE(testFixedIborCouponWithoutForecastCurve) {
         BOOST_ERROR("amount mismatch:"
                     << "\n    calculated: " << amount
                     << "\n    expected: " << expected);
+    }
+}
+
+IborCoupon iborCouponForFixingDate(const ext::shared_ptr<IborIndex>& index, Date fixingDate) {
+    Date startDate = index->valueDate(fixingDate);
+    Date endDate = index->maturityDate(fixingDate);
+
+    IborCoupon coupon(endDate, 100.0, startDate, endDate, index->fixingDays(), index);
+    coupon.setPricer(ext::make_shared<BlackIborCouponPricer>());
+
+    return coupon;
+}
+
+BOOST_AUTO_TEST_CASE(testIborCouponKnowsWhenitHasFixed) {
+    BOOST_TEST_MESSAGE("Testing that ibor coupon knows when it has fixed...");
+
+    Date today = Settings::instance().evaluationDate();
+
+    auto index = ext::make_shared<Euribor3M>();
+    auto calendar = index->fixingCalendar();
+
+    {
+        IborCoupon coupon = iborCouponForFixingDate(index, calendar.advance(today, -1, Days));
+        index->clearFixings();
+        // this should not throw an exception if the fixing is missing
+        BOOST_CHECK_EQUAL(coupon.hasFixed(), true);
+        // but this should
+        BOOST_CHECK_THROW(coupon.rate(), Error);
+    }
+
+    {
+        IborCoupon coupon = iborCouponForFixingDate(index, today);
+        QuantLib::Settings::instance().enforcesTodaysHistoricFixings() = false;
+        index->clearFixings();
+        BOOST_CHECK_EQUAL(coupon.hasFixed(), false);
+    }
+
+    {
+        IborCoupon coupon = iborCouponForFixingDate(index, today);
+        QuantLib::Settings::instance().enforcesTodaysHistoricFixings() = false;
+        index->addFixing(coupon.fixingDate(), 0.01);
+        BOOST_CHECK_EQUAL(coupon.hasFixed(), true);
+    }
+
+    {
+        IborCoupon coupon = iborCouponForFixingDate(index, today);
+        QuantLib::Settings::instance().enforcesTodaysHistoricFixings() = true;
+        index->clearFixings();
+        BOOST_CHECK_EQUAL(coupon.hasFixed(), true);
+        BOOST_CHECK_THROW(coupon.rate(), Error);
+    }
+
+    {
+        IborCoupon coupon = iborCouponForFixingDate(index, calendar.advance(today, 1, Days));
+        BOOST_CHECK_EQUAL(coupon.hasFixed(), false);
     }
 }
 
